@@ -1,0 +1,50 @@
+version: "3.8"
+
+services:
+  app:
+    image: pytorch/pytorch:2.0.1-cuda11.7-cudnn8-devel
+    container_name: app
+    volumes:
+      - ./app:/workspace/app
+    working_dir: /workspace/app
+    ports:
+      - "8888:8888"  # Jupyter Notebook
+    command: >
+      bash -c "pip install -r requirements.txt &&
+               jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root"
+    environment:
+      - HUGGINGFACE_HUB_TOKEN=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
+      - PYTHONUNBUFFERED=1
+
+  mongodb:
+    image: mongo:6.0
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  qdrant:
+    image: qdrant/qdrant:v1.2.2
+    container_name: qdrant
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant_storage:/qdrant/storage
+
+  clearml:
+    image: allegroai/clearml:latest
+    container_name: clearml
+    ports:
+      - "8080:8080"  # ClearML Web UI
+      - "8008:8008"  # ClearML API
+      - "8008:8008"  # ClearML Files Server
+    environment:
+      - CLEARML_API_HOST=http://localhost:8008
+      - CLEARML_WEB_HOST=http://localhost:8080
+      - CLEARML_FILES_HOST=http://localhost:8008
+      - CLEARML_DEFAULT_PROJECT=RAG_System
+
+volumes:
+  mongodb_data:
+  qdrant_storage:
