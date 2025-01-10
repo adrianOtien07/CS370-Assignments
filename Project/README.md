@@ -2,7 +2,6 @@
 
 IDs
 GitHub ID:https://github.com/adrianOtien07/CS370-Assignments.git
-Hugging Face Token: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
 
 Services
 1. App: For training and serving models, interacting with the Hugging Face Hub.
